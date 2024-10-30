@@ -31,19 +31,13 @@ class Module:
 
     def train(self) -> None:
         """Set the mode of this module and all descendent modules to `train`."""
-        def set_mode_train(module: Module) -> None:
-            module.training = True
-            for submod in module.modules():
-                set_mode_train(submod)
-        set_mode_train(self)
+        # TODO: Implement for Task 0.4.
+        raise NotImplementedError("Need to implement for Task 0.4")
 
     def eval(self) -> None:
         """Set the mode of this module and all descendent modules to `eval`."""
-        def set_mode_eval(module: Module) -> None:
-            module.training = False
-            for submod in module.modules():
-                set_mode_eval(submod)
-        set_mode_eval(self)
+        # TODO: Implement for Task 0.4.
+        raise NotImplementedError("Need to implement for Task 0.4")
 
     def named_parameters(self) -> Sequence[Tuple[str, Parameter]]:
         """Collect all the parameters of this module and its descendents.
@@ -53,19 +47,13 @@ class Module:
             The name and `Parameter` of each ancestor parameter.
 
         """
-        params_out = []
-        def collect_params(name, module):
-            for k, v in module._parameters.items():
-                params_out.append((name + k, v))
-            for submod_name, submod in module._modules.items():
-                collect_params(name + submod_name + '.', submod)
-        collect_params('', self)
-        return params_out
+        # TODO: Implement for Task 0.4.
+        raise NotImplementedError("Need to implement for Task 0.4")
 
     def parameters(self) -> Sequence[Parameter]:
         """Enumerate over all the parameters of this module and its descendents."""
-        p = self.named_parameters()
-        return [params for _, params in p]
+        # TODO: Implement for Task 0.4.
+        raise NotImplementedError("Need to implement for Task 0.4")
 
     def add_parameter(self, k: str, v: Any) -> Parameter:
         """Manually add a parameter. Useful helper for scalar parameters.
