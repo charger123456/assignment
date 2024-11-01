@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Dict, Optional, Sequence, Tuple
+from typing import Any, Dict, Optional, Sequence, Tuple, Iterable
 
 
 class Module:
@@ -32,12 +32,20 @@ class Module:
     def train(self) -> None:
         """Set the mode of this module and all descendent modules to `train`."""
         # TODO: Implement for Task 0.4.
-        raise NotImplementedError("Need to implement for Task 0.4")
+        def update(cur: Module) -> None:
+            cur.training = True
+            for child in cur.__dict__["_modules"].values():
+                update(child)
+        update(self)
 
     def eval(self) -> None:
         """Set the mode of this module and all descendent modules to `eval`."""
         # TODO: Implement for Task 0.4.
-        raise NotImplementedError("Need to implement for Task 0.4")
+        def update(cur: Module) -> None:
+            cur.training = False
+            for child in cur.__dict__["_modules"].values():
+                update(child)
+        update(self)
 
     def named_parameters(self) -> Sequence[Tuple[str, Parameter]]:
         """Collect all the parameters of this module and its descendents.
@@ -48,12 +56,28 @@ class Module:
 
         """
         # TODO: Implement for Task 0.4.
-        raise NotImplementedError("Need to implement for Task 0.4")
+        parameters ={}
+        def helper(name: str, node: Module) -> None:
+            prefix = name + "." if name else ""
+            for k, v in node._parameters.items():
+                parameters[prefix + k] = v
+            for k, v in node._modules.items():
+                helper(prefix + k, v)
+        helper("", self)
+        return parameters
 
     def parameters(self) -> Sequence[Parameter]:
         """Enumerate over all the parameters of this module and its descendents."""
         # TODO: Implement for Task 0.4.
-        raise NotImplementedError("Need to implement for Task 0.4")
+        parameters =[]
+        def get_paras(cur:Module, parameters:Iterable[Parameter]) -> Iterable[Parameter]:
+            for para in cur.__dict__["_parameters"].values():
+                parameters.append(para)
+            for module in cur.__dict__["_modules"].values():
+                get_paras(module, parameters)
+        get_paras(self, parameters)
+        return parameters
+
 
     def add_parameter(self, k: str, v: Any) -> Parameter:
         """Manually add a parameter. Useful helper for scalar parameters.
