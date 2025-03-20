@@ -93,9 +93,40 @@ def test_eq(a: float) -> None:
 
 # ## Task 0.2 - Property Testing
 
-# Implement the following property checks
-# that ensure that your operators obey basic
-# mathematical rules.
+# Sigmoid function properties
+@pytest.mark.task0_2
+@given(small_floats)
+def test_sigmoid(a: float) -> None:
+    assert 0.0 <= sigmoid(a) <= 1.0
+    assert_close(1 - sigmoid(a), sigmoid(-a))
+    assert_close(sigmoid(0), 0.5)
+    if a < 0:
+        assert sigmoid(a) < sigmoid(a + 1)
+
+# Transitive property of less-than
+@pytest.mark.task0_2
+@given(small_floats, small_floats, small_floats)
+def test_transitive(a: float, b: float, c: float) -> None:
+    if lt(a, b) and lt(b, c):
+        assert lt(a, c)
+
+# Symmetry of multiplication
+@pytest.mark.task0_2
+def test_symmetric() -> None:
+    x, y = 3.0, 5.0
+    assert_close(mul(x, y), mul(y, x))
+
+# Distributive property of multiplication over addition
+@pytest.mark.task0_2
+def test_distribute() -> None:
+    z, x, y = 2.0, 3.0, 4.0
+    assert_close(mul(z, add(x, y)), add(mul(z, x), mul(z, y)))
+
+# Other mathematical properties (e.g., commutative property of addition)
+@pytest.mark.task0_2
+def test_other() -> None:
+    x, y = 2.0, 3.0
+    assert_close(add(x, y), add(y, x))
 
 
 @pytest.mark.task0_2
