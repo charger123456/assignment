@@ -252,3 +252,116 @@ def test_backs(a: float, b: float) -> None:
     relu_back(a, b)
     inv_back(a + 2.4, b)
     log_back(abs(a) + 4, b)
+    from typing import List
+
+import pytest
+
+from hypothesis import given
+
+from hypothesis.strategies import lists, floats
+
+from minitorch.operators import (
+
+map, zipWith, reduce, negList, addLists, sum, prod
+
+)
+
+# Test for map function
+
+@pytest.mark.task0_3
+
+@given(lists(floats(allow_nan=False, allow_infinity=False, min_value=-100, max_value=100)))
+
+def test_map(lst: List[float]) -> None:
+
+"""Test that map correctly applies a function to all elements."""
+
+squared = map(lambda x: x**2, lst)
+
+assert all(a == b**2 for a, b in zip(squared, lst))
+
+# Test for zipWith function
+
+@pytest.mark.task0_3
+
+@given(lists(floats(min_value=-100, max_value=100), min_size=3, max_size=3),
+
+lists(floats(min_value=-100, max_value=100), min_size=3, max_size=3))
+
+def test_zipWith(lst1: List[float], lst2: List[float]) -> None:
+
+"""Test that zipWith correctly applies a function element-wise."""
+
+summed = zipWith(lambda x, y: x + y, lst1, lst2)
+
+assert all(a == b + c for a, b, c in zip(summed, lst1, lst2))
+
+# Test for reduce function
+
+@pytest.mark.task0_3
+
+@given(lists(floats(min_value=-100, max_value=100), min_size=1))
+
+def test_reduce(lst: List[float]) -> None:
+
+"""Test that reduce correctly reduces a list."""
+
+computed_sum = reduce(lambda x, y: x + y, lst)
+
+expected_sum = sum(lst)
+
+assert computed_sum == expected_sum
+
+# Test for negList function
+
+@pytest.mark.task0_3
+
+@given(lists(floats(min_value=-100, max_value=100)))
+
+def test_negList(lst: List[float]) -> None:
+
+"""Test that negList correctly negates all elements."""
+
+negated = negList(lst)
+
+assert all(a == -b for a, b in zip(negated, lst))
+
+# Test for addLists function
+
+@pytest.mark.task0_3
+
+@given(lists(floats(min_value=-100, max_value=100), min_size=3, max_size=3),
+
+lists(floats(min_value=-100, max_value=100), min_size=3, max_size=3))
+
+def test_addLists(lst1: List[float], lst2: List[float]) -> None:
+
+"""Test that addLists correctly adds corresponding elements."""
+
+added = addLists(lst1, lst2)
+
+assert all(a == b + c for a, b, c in zip(added, lst1, lst2))
+
+# Test for sum function
+
+@pytest.mark.task0_3
+
+@given(lists(floats(min_value=-100, max_value=100), min_size=1))
+
+def test_sum(lst: List[float]) -> None:
+
+"""Test that sum correctly sums the elements in a list."""
+
+assert sum(lst) == reduce(lambda x, y: x + y, lst)
+
+# Test for prod function
+
+@pytest.mark.task0_3
+
+@given(lists(floats(min_value=1, max_value=100), min_size=1))
+
+def test_prod(lst: List[float]) -> None:
+
+"""Test that prod correctly calculates the product of the elements in a list."""
+
+assert prod(lst) == reduce(lambda x, y: x * y, lst)
